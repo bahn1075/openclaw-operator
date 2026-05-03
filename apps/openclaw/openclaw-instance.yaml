@@ -61,18 +61,11 @@ spec:
       enabled: false
       port: 9090
       serviceMonitor:
-        enabled: true
-        interval: 30s
-        labels:
-          release: prometheus
+        enabled: false
       prometheusRule:
-        enabled: true
-        labels:
-          release: prometheus
+        enabled: false
       grafanaDashboard:
-        enabled: true
-        labels:
-          grafana_dashboard: "1"
+        enabled: false
     logging:
       level: info
 
