@@ -15,7 +15,10 @@ spec:
     pullPolicy: IfNotPresent
 
   config:
-    mergeMode: merge
+    mergeMode: overwrite
+    raw:
+      gateway:
+        bind: lan
 
   gateway:
     enabled: false
