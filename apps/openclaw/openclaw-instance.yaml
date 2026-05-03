@@ -1,0 +1,147 @@
+apiVersion: openclaw.rocks/v1alpha1
+kind: OpenClawInstance
+metadata:
+  name: openclaw
+  namespace: openclaw
+  labels:
+    app.kubernetes.io/name: openclaw
+    app.kubernetes.io/part-of: openclaw
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  image:
+    repository: ghcr.io/openclaw/openclaw
+    tag: "2026.5.2"
+    pullPolicy: IfNotPresent
+
+  config:
+    mergeMode: merge
+
+  gateway:
+    controlUiOrigins:
+      - https://openclaw.tail651fca.ts.net
+
+  storage:
+    persistence:
+      enabled: true
+      existingClaim: openclaw-fss-pvc
+      orphan: true
+
+  security:
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+      runAsNonRoot: true
+    networkPolicy:
+      enabled: true
+      allowedIngressNamespaces:
+        - tailscale
+        - monitoring
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+
+  observability:
+    metrics:
+      enabled: true
+      port: 9090
+      serviceMonitor:
+        enabled: true
+        interval: 30s
+        labels:
+          release: prometheus
+      prometheusRule:
+        enabled: true
+        labels:
+          release: prometheus
+      grafanaDashboard:
+        enabled: true
+        labels:
+          grafana_dashboard: "1"
+    logging:
+      level: info
+
+  selfConfigure:
+    enabled: true
+    allowedActions:
+      - skills
+      - config
+      - envVars
+      - workspaceFiles
+
+  chromium:
+    enabled: true
+    image:
+      repository: chromedp/headless-shell
+      tag: stable
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "512Mi"
+      limits:
+        cpu: "1000m"
+        memory: "2Gi"
+    persistence:
+      enabled: false
+
+  tailscale:
+    enabled: true
+    mode: serve
+    hostname: openclaw-sidecar
+    authSSO: true
+    image:
+      repository: ghcr.io/tailscale/tailscale
+      tag: v1.96.5
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "200m"
+        memory: "256Mi"
+
+  sidecars:
+    - name: auth-profile-maintainer
+      image: busybox:1.37
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - -c
+        - mkdir -p /home/openclaw/.openclaw/agents/main/agent && while true; do sleep 3600; done
+      volumeMounts:
+        - name: data
+          mountPath: /home/openclaw/.openclaw
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "128Mi"
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          drop:
+            - ALL
+
+  runtimeDeps:
+    pnpm: true
+    python: true
+
+  autoUpdate:
+    enabled: true
+    checkInterval: 24h
+    backupBeforeUpdate: true
+    rollbackOnFailure: true
+    healthCheckTimeout: 15m
