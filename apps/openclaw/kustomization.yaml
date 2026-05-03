@@ -5,6 +5,9 @@ resources:
   - namespace.yaml
   - fss-pv.yaml
   - fss-pvc.yaml
+  - otel-configmap.yaml
   - openclaw-instance.yaml
   - tailscale-ingress.yaml
-
+  - metrics-service.yaml
+  - metrics-servicemonitor.yaml
+  - metrics-networkpolicy.yaml

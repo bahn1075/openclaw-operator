@@ -17,6 +17,10 @@ spec:
   config:
     mergeMode: overwrite
     raw:
+      diagnostics:
+        otel:
+          endpoint: http://localhost:4318
+          metrics: true
       gateway:
         bind: lan
 
@@ -138,6 +142,41 @@ spec:
         capabilities:
           drop:
             - ALL
+    - name: openclaw-otel-collector
+      image: docker.io/otel/opentelemetry-collector:0.120.0
+      imagePullPolicy: IfNotPresent
+      args:
+        - --config=/etc/otel-collector/config.yaml
+      ports:
+        - name: metrics
+          containerPort: 9090
+          protocol: TCP
+      volumeMounts:
+        - name: openclaw-otel-collector
+          mountPath: /etc/otel-collector/config.yaml
+          subPath: config.yaml
+          readOnly: true
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "64Mi"
+        limits:
+          cpu: "200m"
+          memory: "256Mi"
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          drop:
+            - ALL
+
+  sidecarVolumes:
+    - name: openclaw-otel-collector
+      configMap:
+        name: openclaw-otel-collector
 
   runtimeDeps:
     pnpm: true
