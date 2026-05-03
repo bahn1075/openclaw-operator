@@ -60,6 +60,26 @@ spec:
       cpu: "2000m"
       memory: "4Gi"
 
+  probes:
+    liveness:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 20
+      timeoutSeconds: 15
+      failureThreshold: 6
+    readiness:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 10
+      failureThreshold: 6
+    startup:
+      enabled: true
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      timeoutSeconds: 5
+      failureThreshold: 60
+
   observability:
     metrics:
       enabled: false
