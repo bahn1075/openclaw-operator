@@ -62,19 +62,23 @@ spec:
 
   probes:
     liveness:
-      enabled: false
-    readiness:
       enabled: true
-      initialDelaySeconds: 30
+      initialDelaySeconds: 60
       periodSeconds: 30
       timeoutSeconds: 20
-      failureThreshold: 90
+      failureThreshold: 60
+    readiness:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 10
+      failureThreshold: 6
     startup:
       enabled: true
       initialDelaySeconds: 5
-      periodSeconds: 10
-      timeoutSeconds: 10
-      failureThreshold: 180
+      periodSeconds: 5
+      timeoutSeconds: 5
+      failureThreshold: 60
 
   observability:
     metrics:
