@@ -19,3 +19,4 @@ GitOps manifests for deploying OpenClaw Operator and one OpenClaw instance on th
 
 The instance intentionally starts without AI provider secrets. Provider credentials are expected to be managed later through the PVC-backed `~/.openclaw/agents/main/agent/auth-profiles.json` file.
 
+The Tailscale sidecar uses a cluster-local Secret named `openclaw-tailscale-auth` in the `openclaw` namespace. This Secret is intentionally not committed to Git.

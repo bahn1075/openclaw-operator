@@ -97,6 +97,9 @@ spec:
     mode: serve
     hostname: openclaw-sidecar
     authSSO: true
+    authKeySecretRef:
+      name: openclaw-tailscale-auth
+    authKeySecretKey: authkey
     image:
       repository: ghcr.io/tailscale/tailscale
       tag: v1.96.5
