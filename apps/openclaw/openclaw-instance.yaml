@@ -33,6 +33,25 @@ spec:
     controlUiOrigins:
       - https://openclaw.tail651fca.ts.net
 
+  availability:
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - 10.0.10.75
+          - weight: 50
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - 10.0.10.39
+
   storage:
     persistence:
       enabled: true
@@ -70,9 +89,9 @@ spec:
     readiness:
       enabled: true
       initialDelaySeconds: 10
-      periodSeconds: 10
-      timeoutSeconds: 10
-      failureThreshold: 6
+      periodSeconds: 30
+      timeoutSeconds: 20
+      failureThreshold: 40
     startup:
       enabled: true
       initialDelaySeconds: 5
@@ -108,7 +127,7 @@ spec:
       tag: stable
     resources:
       requests:
-        cpu: "50m"
+        cpu: "25m"
         memory: "512Mi"
       limits:
         cpu: "1000m"
@@ -129,7 +148,7 @@ spec:
       tag: v1.96.5
     resources:
       requests:
-        cpu: "20m"
+        cpu: "10m"
         memory: "64Mi"
       limits:
         cpu: "200m"
@@ -148,7 +167,7 @@ spec:
           mountPath: /home/openclaw/.openclaw
       resources:
         requests:
-          cpu: "5m"
+          cpu: "2m"
           memory: "32Mi"
         limits:
           cpu: "100m"
@@ -178,7 +197,7 @@ spec:
           readOnly: true
       resources:
         requests:
-          cpu: "10m"
+          cpu: "5m"
           memory: "64Mi"
         limits:
           cpu: "200m"
