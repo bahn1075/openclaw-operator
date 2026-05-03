@@ -8,6 +8,27 @@ OpenClaw reads provider auth from the PVC-backed path:
 /home/openclaw/.openclaw/agents/main/agent/auth-profiles.json
 ```
 
+The runtime format must be the canonical `version` + `profiles` shape:
+
+```json
+{
+  "version": 1,
+  "profiles": {
+    "openai-codex:your-email@example.com": {
+      "type": "oauth",
+      "provider": "openai-codex",
+      "access": "...",
+      "refresh": "...",
+      "expires": 1778027426540,
+      "email": "your-email@example.com",
+      "accountId": "..."
+    }
+  }
+}
+```
+
+Do not paste the legacy flat shape directly, for example `{ "openai-codex:...": { ... } }`; OpenClaw 2026.5.2 does not treat that as a runtime auth store.
+
 To copy an existing profile from another OpenClaw instance:
 
 ```bash
@@ -29,5 +50,6 @@ Verify:
 kubectl -n openclaw exec -it openclaw-0 -c openclaw -- openclaw models status
 ```
 
-Do not commit `auth-profiles.json` to this repository. It can contain plaintext API keys, OAuth access tokens, and refresh tokens.
+This deployment sets the default model to `openai-codex/gpt-5.5`, so a valid `openai-codex` OAuth profile should appear under `Providers w/ OAuth/tokens` with no `Missing auth` entry for `openai`.
 
+Do not commit `auth-profiles.json` to this repository. It can contain plaintext API keys, OAuth access tokens, and refresh tokens.
