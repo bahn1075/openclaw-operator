@@ -18,6 +18,7 @@ spec:
     mergeMode: merge
 
   gateway:
+    enabled: false
     controlUiOrigins:
       - https://openclaw.tail651fca.ts.net
 
@@ -50,7 +51,7 @@ spec:
 
   observability:
     metrics:
-      enabled: true
+      enabled: false
       port: 9090
       serviceMonitor:
         enabled: true
@@ -79,7 +80,7 @@ spec:
   chromium:
     enabled: true
     image:
-      repository: chromedp/headless-shell
+      repository: docker.io/chromedp/headless-shell
       tag: stable
     resources:
       requests:
@@ -109,7 +110,7 @@ spec:
 
   sidecars:
     - name: auth-profile-maintainer
-      image: busybox:1.37
+      image: docker.io/library/busybox:1.37
       imagePullPolicy: IfNotPresent
       command:
         - sh
